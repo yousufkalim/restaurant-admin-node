@@ -31,14 +31,7 @@ router.post(
   Create
 );
 // login restaurant
-router.post(
-  "/login",
-  auth(STRINGS.ROLES.ADMIN),
-
-  loginUserValidator,
-  isValidated,
-  Login
-);
+router.post("/login", loginUserValidator, isValidated, Login);
 // get active restaurants
 router.get("/active", auth(STRINGS.ROLES.ADMIN), getActiveRestaurants);
 // get deactive restaurants
@@ -47,7 +40,7 @@ router.get("/deactive", auth(STRINGS.ROLES.ADMIN), getDeactiveRestaurants);
 // update restaurant
 router.put(
   "/update/:id",
-  auth(STRINGS.ROLES.ADMIN),
+  // auth(STRINGS.ROLES.ADMIN),
   upload.single("restaurant_image"),
   registerRestaurantValidator,
   isValidated,

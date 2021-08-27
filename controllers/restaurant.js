@@ -11,9 +11,23 @@ exports.Create = async (req, res) => {
   try {
     const data = req.body;
 
-    let restaurant = await Restaurant.findOne({ email: data.email }); // check if restaurant already exists
-    if (restaurant)
-      res.status(400).send(response(STRINGS.ERRORS.restaurantExists, {}));
+    let restaurantEmail = await Restaurant.findOne({
+      email: data.email,
+    }); // check if restaurant email already exists
+    let restaurantName = await Restaurant.findOne({
+      restaurant_name: data.restaurant_name,
+    }); // check if restaurant name already exists
+    if (restaurantEmail) {
+      return res
+        .status(400)
+        .send(response(STRINGS.ERRORS.restaurantEmailExists, {}));
+    }
+    if (restaurantName) {
+      return res
+        .status(400)
+        .send(response(STRINGS.ERRORS.restaurantNameExists, {}));
+    }
+
     var uploaded_Picture = "";
     if (!req.file) {
       return res.send(response("Restaurant image is required", 400));
@@ -23,7 +37,7 @@ exports.Create = async (req, res) => {
     data.password = hash;
     data.restaurant_image = uploaded_Picture;
 
-    restaurant = await new Restaurant(data).save(); //restaurant saved
+    let restaurant = await new Restaurant(data).save(); //restaurant saved
     res.status(200).send(response(STRINGS.TEXTS.restaurantCreated, restaurant));
   } catch (err) {
     res.send(response(err.message, 400));
@@ -35,7 +49,9 @@ exports.Login = async (req, res) => {
     const data = req.body;
     const restaurant = await Restaurant.findOne({ email: data.email }); // Check if restaurant exist
     if (!restaurant)
-      res.status(400).send(response(STRINGS.ERRORS.emailInvalid));
+      return res.status(400).send(response(STRINGS.ERRORS.emailInvalid));
+    if (restaurant.status == "InActive")
+      return res.status(400).send(response(STRINGS.ERRORS.AccountActive));
     const isCorrect = await bcrypt.compare(data.password, restaurant.password); // Check if restaurant password is correct
     if (!isCorrect)
       res
@@ -155,7 +171,7 @@ exports.ActivationAccount = async (req, res) => {
       });
       res
         .status(200)
-        .send(response(STRINGS.TEXTS.restaurantDeactivate, restaurant));
+        .send(response(`Restaurant ${status} successfully`, restaurant));
     } else {
       res.status(400).send(response(STRINGS.ERRORS.restaurantNotFound, {}));
     }

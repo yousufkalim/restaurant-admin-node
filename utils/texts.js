@@ -4,12 +4,15 @@ module.exports = {
     restaurantNotFound: "Restaurant Not Found",
 
     userExists: "User exists",
-    restaurantExists: "Restaurant exists",
+    restaurantEmailExists: "Restaurant email exists",
+    restaurantNameExists: "Restaurant name exists",
 
     emailRequired: "Email Required",
     passwordRequired: "Password Required",
     emailInvalid: "Email Invalid!",
     passwordInvalid: "Password Invalid!",
+    AccountActive:
+      "Your account is not active ,please contact us our support team",
   },
   TEXTS: {
     allUsers: "All Users",
